@@ -165,7 +165,7 @@ sub vcl_recv {
             # throw a forbidden error if debugging is off and a esi block is
             # requested by the user (does not apply to ajax blocks)
             if (req.http.X-Varnish-Esi-Method == "esi" && req.esi_level == 0 &&
-                    !({{debug_headers}} || client.ip ~ debug_acl)) {
+                    !({{debug_headers}} || client.ip ~ debug_acl || std.ip(req.http.X-Real-IP,"0.0.0.0") ~ debug_acl)) {
                 return (synth(403, "External ESI requests are not allowed"));
             }
         }
